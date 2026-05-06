@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ quiz_title|default:quiz.title|default:"Quiz" }}</title>
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+{% if no_quiz %}
+    <div class="no-quiz">
+        <h2>🚫 Quiz Not Available</h2>
+        <p>This course does not have a quiz yet.</p>
+    </div>
+
+{% else %}
+
+    <div class="quiz-header">
+        <h1>{{ quiz_title|default:quiz.title }}</h1>
+        <div class="progress">
+            Question <span id="qnum">1</span> / {{ questions|length }}
+        </div>
+    </div>
+
+    <form id="quizForm">
+        {% csrf_token %}
+        {% for q in questions %}
+        <input type="hidden" name="question_ids" value="{{ q.id }}">
+        <div class="question-box" data-question="{{ forloop.counter0 }}">
+
+            <h3>{{ forloop.counter }}. {{ q.question_text }}</h3>
+
+            <div class="options">
+
+                <label class="option">
+                    <input type="radio" name="question_{{ q.id }}" value="1">
+                    <span>{{ q.option1 }}</span>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="question_{{ q.id }}" value="2">
+                    <span>{{ q.option2 }}</span>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="question_{{ q.id }}" value="3">
+                    <span>{{ q.option3 }}</span>
+                </label>
+
+                <label class="option">
+                    <input type="radio" name="question_{{ q.id }}" value="4">
+                    <span>{{ q.option4 }}</span>
+                </label>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+        <div class="quiz-controls">
+            <button type="button" id="prevBtn">Previous</button>
+            <button type="button" id="nextBtn">Next</button>
+            <button type="submit" id="submitBtn" style="display:none;">Submit Quiz</button>
+        </div>
+
+    </form>
+
+{% endif %}
+</div>
+
+<script>
+const QUIZ_ID = {{ course.id|default:quiz.course.id|default:0 }};
+const COURSE_ID = {{ course.id|default:quiz.course.id|default:0 }};
+const CSRF_TOKEN = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/quiz.js' %}"></script>
+{% if auth_guard_enabled %}
+<script>
+    (function () {
+        const loginUrl = "{{ auth_guard_login_url|escapejs }}";
+        const statusUrl = "{{ auth_guard_status_url|escapejs }}";
+
+        const redirectToLogin = function (targetUrl) {
+            try {
+                window.localStorage.clear();
+            } catch (error) {}
+
+            try {
+                window.sessionStorage.clear();
+            } catch (error) {}
+
+            window.location.replace(targetUrl || loginUrl);
+        };
+
+        const verifyAuth = function () {
+            fetch(statusUrl, {
+                credentials: "same-origin",
+                cache: "no-store",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("Unable to verify authentication.");
+                    }
+
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (!data.authenticated) {
+                        redirectToLogin(data.login_url);
+                    }
+                })
+                .catch(function () {});
+        };
+
+        verifyAuth();
+
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                verifyAuth();
+            }
+        });
+    })();
+</script>
+{% endif %}
+
+</body>
+</html>

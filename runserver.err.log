@@ -1,0 +1,63 @@
+C:\Users\ratho\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.4.0.post2)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+[02/Apr/2026 16:17:37] "GET / HTTP/1.1" 200 53379
+[02/Apr/2026 16:17:43] "GET /all-courses/ HTTP/1.1" 200 20751
+[02/Apr/2026 16:17:46] "GET /courses/4/ HTTP/1.1" 200 13991
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:17:47] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:17:57] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:17:58] "GET /enroll/4/ HTTP/1.1" 502 75
+[02/Apr/2026 16:17:59] "GET /enroll/4/ HTTP/1.1" 200 160
+[02/Apr/2026 16:17:59] "GET /enroll/4/ HTTP/1.1" 200 160
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:03] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:06] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:06] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:08] "GET /enroll/4/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:08] "GET /enroll/4/ HTTP/1.1" 502 75
+[02/Apr/2026 16:18:09] "GET /courses/4/ HTTP/1.1" 200 13991
+[02/Apr/2026 16:18:10] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:18:10] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:18:10] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:18:10] "GET /courses/4/ HTTP/1.1" 200 13991
+[02/Apr/2026 16:18:10] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:18:10] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:18:10] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:18:10] "GET /courses/4/ HTTP/1.1" 200 13991
+[02/Apr/2026 16:18:10] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:18:10] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:18:10] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:18:10] "GET /courses/4/ HTTP/1.1" 200 13991
+[02/Apr/2026 16:18:10] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:18:10] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:18:10] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:18:10] "GET /courses/4/ HTTP/1.1" 200 13991
+[02/Apr/2026 16:18:10] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:18:10] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:18:10] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:18:11] "GET /static/img/logo.png HTTP/1.1" 200 112779
+Bad Gateway: /enroll/4/
+[02/Apr/2026 16:18:13] "GET /enroll/4/ HTTP/1.1" 502 75
+[02/Apr/2026 16:18:25] "GET /courses/8/ HTTP/1.1" 200 14009
+Bad Gateway: /enroll/8/
+[02/Apr/2026 16:18:26] "GET /enroll/8/ HTTP/1.1" 502 75
+[02/Apr/2026 16:19:40] "GET / HTTP/1.1" 200 53379
+[02/Apr/2026 16:19:44] "GET /courses/5/ HTTP/1.1" 200 13993
+[02/Apr/2026 16:19:44] "GET /static/js/course.js HTTP/1.1" 304 0
+Bad Gateway: /enroll/5/
+[02/Apr/2026 16:19:46] "GET /enroll/5/ HTTP/1.1" 502 75
+[02/Apr/2026 16:24:28] "GET /courses/5/ HTTP/1.1" 200 13993
+[02/Apr/2026 16:24:28] "GET /static/css/style.css HTTP/1.1" 200 33243
+[02/Apr/2026 16:24:28] "GET /static/css/course.css HTTP/1.1" 200 19180
+[02/Apr/2026 16:24:28] "GET /static/js/course.js HTTP/1.1" 200 27057
+[02/Apr/2026 16:24:29] "GET /static/img/logo.png HTTP/1.1" 200 112779
+Bad Gateway: /enroll/5/
+[02/Apr/2026 16:24:30] "GET /enroll/5/ HTTP/1.1" 502 75
+Bad Gateway: /enroll/5/
+[02/Apr/2026 16:29:53] "GET /enroll/5/ HTTP/1.1" 502 75
