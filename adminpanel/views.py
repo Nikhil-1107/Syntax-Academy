@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
+import re
 import calendar
 import json
 from django.db.models import Sum, Count, Avg
@@ -32,6 +33,21 @@ def _is_safe_next_url(request, url):
     )
 
 
+def _is_safe_admin_next_url(request, url):
+    if not _is_safe_next_url(request, url):
+        return False
+
+    path = urlparse(url).path
+    admin_root = reverse("dashboard_home")
+    admin_login_url = reverse("admin_login")
+    admin_logout_url = reverse("admin_logout")
+
+    return (
+        path.startswith(admin_root)
+        and path not in {admin_login_url, admin_logout_url}
+    )
+
+
 def _get_post_auth_redirect(request, fallback_name="dashboard_home", session_key="admin_login_next"):
     next_candidates = [
         request.POST.get("next"),
@@ -40,7 +56,7 @@ def _get_post_auth_redirect(request, fallback_name="dashboard_home", session_key
     ]
 
     for next_url in next_candidates:
-        if _is_safe_next_url(request, next_url):
+        if _is_safe_admin_next_url(request, next_url):
             return next_url
 
     return reverse(fallback_name)
@@ -92,10 +108,14 @@ def admin_login(request):
         return redirect(_get_post_auth_redirect(request))
 
     next_url = request.POST.get("next") or request.GET.get("next") or request.session.get("admin_login_next", "")
-    context = {"next": next_url}
 
-    if _is_safe_next_url(request, next_url):
+    if _is_safe_admin_next_url(request, next_url):
         request.session["admin_login_next"] = next_url
+    else:
+        next_url = ""
+        request.session.pop("admin_login_next", None)
+
+    context = {"next": next_url}
 
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
@@ -289,6 +309,7 @@ def students_manage(request):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         email = request.POST.get("email", "").strip()
+        country_code = request.POST.get("country_code", "").strip()
         mobile = request.POST.get("mobile", "").strip()
         level = request.POST.get("level", "beginner")
         password = request.POST.get("password", "")
@@ -302,9 +323,18 @@ def students_manage(request):
         elif not student_instance and not password:
             form_error = "Password is required when adding a new student."
         else:
+            country_code = country_code.strip()
+            if country_code and not country_code.startswith("+"):
+                country_code = f"+{re.sub(r'\D', '', country_code)}"
+            if not re.search(r"\d", country_code):
+                country_code = "+91"
+
+            mobile = re.sub(r"\D", "", mobile)
+
             if student_instance:
                 student_instance.name = name
                 student_instance.email = email
+                student_instance.country_code = country_code
                 student_instance.mobile = mobile
                 student_instance.level = level
                 if password:
@@ -314,6 +344,7 @@ def students_manage(request):
                 Registration.objects.create(
                     name=name,
                     email=email,
+                    country_code=country_code,
                     mobile=mobile,
                     password=password,
                     level=level,
@@ -356,6 +387,7 @@ def students_manage(request):
         student.favourite_total = favourite_totals.get(student.id, 0)
         student.total_spent = payment_totals.get(student.id, 0)
         student.joined_at = getattr(student, registration_date_field, None) if registration_date_field else None
+        student.country_code = student.country_code or "+91"
         student.level_label = level_labels.get(student.level, student.level.title())
 
         total_enrollments += student.enrollment_total

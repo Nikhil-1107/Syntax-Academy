@@ -1,20 +1,117 @@
 {% extends "base.html" %}
+{% block title %}Syntax Academy | Learn to Code{% endblock %}
 {% block content %}
 
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Syntax Academy | Learn to Code</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <div class="index-skeleton-loader" id="indexSkeletonLoader" role="status" aria-live="polite" aria-label="Loading homepage">
+            <div class="index-skeleton-shell">
+                <section class="index-skeleton-hero">
+                    <div class="index-skeleton-line index-skeleton-title"></div>
+                    <div class="index-skeleton-line index-skeleton-title short"></div>
+                    <div class="index-skeleton-line index-skeleton-copy"></div>
+                    <div class="index-skeleton-search">
+                        <div class="index-skeleton-circle"></div>
+                        <div class="index-skeleton-line"></div>
+                        <div class="index-skeleton-button"></div>
+                    </div>
+                </section>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    </head>
-    <body>
+                <section class="index-skeleton-section index-skeleton-courses">
+                    <div class="index-skeleton-section-head">
+                        <div class="index-skeleton-line index-skeleton-kicker"></div>
+                        <div class="index-skeleton-line index-skeleton-heading"></div>
+                    </div>
+
+                    <div class="index-skeleton-grid index-skeleton-course-grid">
+                        {% for _ in "1234" %}
+                            <article class="index-skeleton-card index-skeleton-course-card">
+                                <div class="index-skeleton-thumb">
+                                    <div class="index-skeleton-pill"></div>
+                                </div>
+                                <div class="index-skeleton-card-body">
+                                    <div class="index-skeleton-line"></div>
+                                    <div class="index-skeleton-line short"></div>
+                                    <div class="index-skeleton-meta">
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <div class="index-skeleton-meta index-skeleton-proof">
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <div class="index-skeleton-button"></div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+
+                    <div class="index-skeleton-center-action">
+                        <div class="index-skeleton-button"></div>
+                    </div>
+                </section>
+
+                <section class="index-skeleton-section index-skeleton-how">
+                    <div class="index-skeleton-section-head">
+                        <div class="index-skeleton-line index-skeleton-kicker"></div>
+                        <div class="index-skeleton-line index-skeleton-heading wide"></div>
+                    </div>
+
+                    <div class="index-skeleton-grid index-skeleton-how-grid">
+                        {% for _ in "123" %}
+                            <article class="index-skeleton-card index-skeleton-step-card">
+                                <div class="index-skeleton-step-number"></div>
+                                <div class="index-skeleton-circle"></div>
+                                <div class="index-skeleton-line"></div>
+                                <div class="index-skeleton-line short"></div>
+                                <div class="index-skeleton-line mini"></div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="index-skeleton-section index-skeleton-reviews">
+                    <div class="index-skeleton-section-head">
+                        <div class="index-skeleton-line index-skeleton-kicker"></div>
+                        <div class="index-skeleton-line index-skeleton-heading"></div>
+                        <div class="index-skeleton-line index-skeleton-copy compact"></div>
+                    </div>
+
+                    <div class="index-skeleton-review-controls">
+                        <div class="index-skeleton-circle"></div>
+                        <div class="index-skeleton-circle"></div>
+                    </div>
+
+                    <div class="index-skeleton-grid index-skeleton-review-grid">
+                        {% for _ in "123" %}
+                            <article class="index-skeleton-card index-skeleton-review-card">
+                                <div class="index-skeleton-review-top">
+                                    <div class="index-skeleton-circle"></div>
+                                    <div>
+                                        <div class="index-skeleton-line"></div>
+                                        <div class="index-skeleton-line short"></div>
+                                    </div>
+                                </div>
+                                <div class="index-skeleton-stars">
+                                    {% for _ in "12345" %}
+                                        <span></span>
+                                    {% endfor %}
+                                </div>
+                                <div class="index-skeleton-line"></div>
+                                <div class="index-skeleton-line"></div>
+                                <div class="index-skeleton-line short"></div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                {% if not login %}
+                    <section class="index-skeleton-section index-skeleton-cta">
+                        <div class="index-skeleton-line index-skeleton-heading"></div>
+                        <div class="index-skeleton-line index-skeleton-copy compact"></div>
+                        <div class="index-skeleton-button"></div>
+                    </section>
+                {% endif %}
+            </div>
+        </div>
 
         <!-- Navbar -->
 
@@ -283,6 +380,21 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
+            (function () {
+                const loader = document.getElementById('indexSkeletonLoader');
+
+                if (!loader) {
+                    return;
+                }
+
+                const hideLoader = function () {
+                    document.documentElement.classList.add('index-page-ready');
+                    loader.setAttribute('aria-hidden', 'true');
+                };
+
+                window.setTimeout(hideLoader, 500);
+            })();
+
             document.addEventListener('DOMContentLoaded', function () {
                 const reviewsMarquee = document.getElementById('reviewsMarquee');
 
@@ -381,6 +493,4 @@
                 updateNavButtons();
             });
         </script>
-    </body>
-</html>
 {% endblock content %}

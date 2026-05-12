@@ -1,6 +1,10 @@
 {% extends "adminpanel/base.html" %}
 {% load static %}
 
+{% block page_skeleton %}
+    {% include "adminpanel/skeleton.html" with variant="feedback" %}
+{% endblock page_skeleton %}
+
 {% block page_title %}Results{% endblock %}
 
 {% block extra_css %}

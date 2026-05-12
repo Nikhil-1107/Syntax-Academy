@@ -4,6 +4,23 @@
 
 {% block footer %}{% endblock %}
 
+{% block page_skeleton %}
+<div class="page-skeleton-loader" role="status" aria-live="polite" aria-label="Loading login form">
+    <div class="sk-auth-shell">
+        <div class="sk-card sk-auth-card">
+            <div class="sk-line sk-title"></div>
+            <div class="sk-field"></div>
+            <div class="sk-field"></div>
+            <div class="sk-button" style="width:100%;"></div>
+            <div class="sk-meta-row">
+                <div class="sk-line"></div>
+                <div class="sk-line"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_skeleton %}
+
 {% block content %}
 <style>
 .auth-page{
@@ -233,7 +250,7 @@
         </div>
 
         <div class="admin-login-link">
-            <a href="{% url 'admin_login' %}{% if next %}?next={{ next|urlencode }}{% endif %}">
+            <a href="{% url 'admin_login' %}">
                 <i class="bi bi-shield-lock"></i>
                 Admin Login
             </a>

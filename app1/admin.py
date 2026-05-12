@@ -31,7 +31,7 @@ class note_(admin.ModelAdmin):
 admin.site.register(Notes, note_)
 
 class reg_(admin.ModelAdmin):
-    list_display = ['id', 'name', 'email', 'mobile', 'password']
+    list_display = ['id', 'name', 'email', 'country_code', 'mobile', 'password']
     
 admin.site.register(Registration, reg_)
 

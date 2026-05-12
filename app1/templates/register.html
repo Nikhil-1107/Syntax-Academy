@@ -1,8 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Register | Syntax Academy{% endblock %}
 
 {% block footer %}{% endblock %}
+
+{% block page_skeleton %}
+<div class="page-skeleton-loader" role="status" aria-live="polite" aria-label="Loading registration form">
+    <div class="sk-auth-shell">
+        <div class="sk-card sk-auth-card">
+            <div class="sk-line sk-title"></div>
+            <div class="sk-field"></div>
+            <div class="sk-field"></div>
+            <div class="sk-field"></div>
+            <div class="sk-field"></div>
+            <div class="sk-field"></div>
+            <div class="sk-button" style="width:100%;"></div>
+        </div>
+    </div>
+</div>
+{% endblock page_skeleton %}
 
 {% block content %}
 <style>
@@ -53,6 +70,28 @@
     padding:0 0 12px;
     margin-bottom:22px;
     border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+.phone-field{
+    gap:10px;
+}
+
+.country-code-wrapper{
+    flex:0 0 140px;
+}
+
+.country-code-select{
+    padding-right:18px;
+}
+
+@media (max-width: 520px){
+    .phone-field{
+        flex-wrap:wrap;
+    }
+
+    .country-code-wrapper{
+        flex:1 1 100%;
+    }
 }
 
 .auth-icon{
@@ -223,9 +262,30 @@ select option{
                 <input type="email" name="email" class="auth-input" placeholder="Email Address" required>
             </div>
 
-            <div class="auth-field">
+            <div class="auth-field phone-field">
                 <span class="auth-icon"><i class="bi bi-telephone"></i></span>
-                <input type="tel" name="mobile" class="auth-input" placeholder="Mobile Number" inputmode="numeric" pattern="[0-9]*" maxlength="10" data-numeric-only required>
+                <div class="select-wrapper country-code-wrapper">
+                    <select
+                        name="country_code"
+                        class="auth-select country-code-select"
+                        data-country-code-select
+                        data-default-code="IN"
+                        required
+                    >
+                        <option value="" disabled selected>Code</option>
+                    </select>
+                </div>
+                <input
+                    type="tel"
+                    name="mobile"
+                    class="auth-input"
+                    placeholder="Mobile Number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    maxlength="15"
+                    data-numeric-only
+                    required
+                >
             </div>
 
             <div class="auth-field password-field" id="password-group">
@@ -257,6 +317,8 @@ select option{
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/country-code-select.js' %}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

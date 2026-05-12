@@ -788,37 +788,15 @@ enrollBtn.addEventListener("click", function(){
         // Payment required
         if(data.status === "payment_required"){
 
+            const orderCurrency = data.currency || "INR";
             var options = {
 
                 key: data.key,
                 amount: data.amount,
-                currency: "INR",
+                currency: orderCurrency,
                 name: "Syntax Academy",
                 description: data.course_name,
                 order_id: data.order_id,
-                method: {
-                    upi: true
-                },
-                config: {
-                    display: {
-                        // Add a dedicated UPI block so collect (UPI ID) is visible.
-                        blocks: {
-                            upi_collect: {
-                                name: "Pay via UPI ID",
-                                instruments: [
-                                    {
-                                        method: "upi",
-                                        flow: "collect"
-                                    }
-                                ]
-                            }
-                        },
-                        sequence: ["block.upi_collect"],
-                        preferences: {
-                            show_default_blocks: true
-                        }
-                    }
-                },
 
                 handler: function (response){
                     const payload = new URLSearchParams({
@@ -833,7 +811,8 @@ enrollBtn.addEventListener("click", function(){
                         method:"POST",
                         headers:{
                             "Content-Type":"application/x-www-form-urlencoded",
-                            "X-CSRFToken": getCookie("csrftoken")
+                            "X-CSRFToken": getCookie("csrftoken"),
+                            "X-Requested-With": "XMLHttpRequest"
                         },
                         body: payload.toString()
                     })
@@ -871,6 +850,37 @@ enrollBtn.addEventListener("click", function(){
                 }
 
             };
+
+            if (data.display_currency && data.display_amount && data.display_currency !== orderCurrency) {
+                options.display_currency = data.display_currency;
+                options.display_amount = data.display_amount;
+            }
+
+            if (orderCurrency === "INR") {
+                options.method = {
+                    upi: true
+                };
+                options.config = {
+                    display: {
+                        // Add a dedicated UPI block so collect (UPI ID) is visible.
+                        blocks: {
+                            upi_collect: {
+                                name: "Pay via UPI ID",
+                                instruments: [
+                                    {
+                                        method: "upi",
+                                        flow: "collect"
+                                    }
+                                ]
+                            }
+                        },
+                        sequence: ["block.upi_collect"],
+                        preferences: {
+                            show_default_blocks: true
+                        }
+                    }
+                };
+            }
 
             var rzp = new Razorpay(options);
             rzp.open();

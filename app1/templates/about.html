@@ -1,11 +1,53 @@
 {% extends "base.html" %}
-{% block content %}
-
 {% load static %}
 
-{% block extra_css %}
+{% block page_skeleton %}
+<div class="page-skeleton-loader" role="status" aria-live="polite" aria-label="Loading about page">
+    <div class="sk-shell">
+        <section class="sk-center sk-hero">
+            <div class="sk-line sk-title"></div>
+            <div class="sk-line sk-title short"></div>
+            <div class="sk-line sk-copy"></div>
+        </section>
+
+        <section class="sk-grid sk-grid-4">
+            {% for _ in "1234" %}
+                <div class="sk-card sk-card-pad">
+                    <div class="sk-line sk-title short"></div>
+                    <div class="sk-line sk-copy short"></div>
+                </div>
+            {% endfor %}
+        </section>
+
+        <section class="sk-grid sk-grid-2" style="margin-top:54px;">
+            <div class="sk-card sk-card-pad">
+                <div class="sk-line sk-title short"></div>
+                <div class="sk-line sk-copy"></div>
+                <div class="sk-line sk-copy short"></div>
+            </div>
+            <div class="sk-card sk-card-pad">
+                <div class="sk-line sk-title short"></div>
+                <div class="sk-line sk-copy short"></div>
+            </div>
+        </section>
+
+        <section class="sk-page-head" style="margin-top:64px;">
+            <div class="sk-line sk-title short"></div>
+        </section>
+        <section class="sk-grid sk-grid-4">
+            {% for _ in "1234" %}
+                <div class="sk-card sk-card-pad">
+                    <div class="sk-circle"></div>
+                    <div class="sk-line sk-copy short" style="margin-top:18px;"></div>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+{% endblock page_skeleton %}
+
+{% block content %}
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
-{% endblock %}
 
 <!-- HERO -->
 <section class="about-hero">

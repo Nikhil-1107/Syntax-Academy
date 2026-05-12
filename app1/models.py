@@ -48,7 +48,8 @@ class Registration(models.Model):
 
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    mobile = models.IntegerField()
+    country_code = models.CharField(max_length=8, default='+91')
+    mobile = models.CharField(max_length=20)
     password = models.CharField(max_length=10)
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_created_at = models.DateTimeField(null=True, blank=True)

@@ -1,9 +1,64 @@
 {% extends "base.html" %}
+{% block page_skeleton %}
+<div class="page-skeleton-loader" role="status" aria-live="polite" aria-label="Loading profile">
+    <div class="sk-shell">
+        <section class="sk-card sk-card-pad sk-profile-top">
+            <div class="sk-avatar"></div>
+            <div>
+                <div class="sk-line sk-title short"></div>
+                <div class="sk-line sk-copy short" style="margin-top:14px;"></div>
+                <div class="sk-pill" style="margin-top:18px;"></div>
+            </div>
+        </section>
+
+        <section class="sk-page-head" style="align-items:flex-start; margin-top:44px;">
+            <div class="sk-line sk-title short"></div>
+        </section>
+        <section class="sk-grid sk-grid-3">
+            {% for _ in "123" %}
+                <div class="sk-card sk-card-pad sk-info-row">
+                    <div class="sk-circle"></div>
+                    <div>
+                        <div class="sk-line sk-title short"></div>
+                        <div class="sk-line sk-copy short" style="margin-top:10px;"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+
+        <section class="sk-page-head" style="align-items:flex-start; margin-top:44px;">
+            <div class="sk-line sk-title short"></div>
+        </section>
+        <section class="sk-grid sk-grid-3">
+            {% for _ in "123" %}
+                <article class="sk-card sk-course-card">
+                    <div class="sk-thumb"></div>
+                    <div class="sk-course-body">
+                        <div class="sk-line"></div>
+                        <div class="sk-line sk-copy short"></div>
+                        <div class="sk-button" style="width:100%;"></div>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="sk-grid sk-grid-2" style="margin-top:44px;">
+            {% for _ in "12" %}
+                <div class="sk-card sk-form-card">
+                    <div class="sk-line sk-title short"></div>
+                    <div class="sk-field"></div>
+                    <div class="sk-field"></div>
+                    <div class="sk-button" style="width:100%;"></div>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+{% endblock page_skeleton %}
+
 {% block content %}
 {% load static %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
 <div class="profile-wrapper">
@@ -182,7 +237,28 @@
                     <input type="text" name="name" value="{{ user.name }}" required>
 
                     <label>Mobile Number</label>
-                    <input type="text" name="mobile" value="{{ user.mobile }}" inputmode="numeric" pattern="[0-9]*" maxlength="10" data-numeric-only required>
+                    <div class="mobile-field">
+                        <div class="country-code-field">
+                            <select
+                                name="country_code"
+                                data-country-code-select
+                                data-selected="{{ user.country_code|default:'IN' }}"
+                                required
+                            >
+                                <option value="" disabled>Code</option>
+                            </select>
+                        </div>
+                        <input
+                            type="text"
+                            name="mobile"
+                            value="{{ user.mobile }}"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            maxlength="15"
+                            data-numeric-only
+                            required
+                        >
+                    </div>
 
                     <button type="submit" class="save-btn">Save Changes</button>
                 </form>
@@ -211,6 +287,8 @@
     </div>
 
 </div>
+
+<script src="{% static 'js/country-code-select.js' %}"></script>
 
 
 <script>

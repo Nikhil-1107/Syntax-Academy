@@ -1,0 +1,218 @@
+<div class="admin-skeleton-loader admin-skeleton-{{ variant|default:'manage' }}" role="status" aria-live="polite" aria-label="Loading admin page">
+    <div class="ad-sk-shell">
+        {% if variant == "dashboard" %}
+            <section class="ad-sk-header">
+                <div>
+                    <div class="ad-sk-line ad-sk-title"></div>
+                    <div class="ad-sk-line ad-sk-copy"></div>
+                </div>
+                <div class="ad-sk-actions">
+                    <div class="ad-sk-pill"></div>
+                    <div class="ad-sk-pill short"></div>
+                </div>
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-4">
+                {% for _ in "1234" %}
+                    <article class="ad-sk-card ad-sk-stat">
+                        <div class="ad-sk-stat-head">
+                            <div class="ad-sk-icon"></div>
+                            <div class="ad-sk-pill mini"></div>
+                        </div>
+                        <div class="ad-sk-line ad-sk-value"></div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                        <div class="ad-sk-chart mini"></div>
+                    </article>
+                {% endfor %}
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-2 ad-sk-spaced">
+                <article class="ad-sk-card ad-sk-chart-card">
+                    <div class="ad-sk-line ad-sk-copy short"></div>
+                    <div class="ad-sk-donut"></div>
+                    <div class="ad-sk-list compact">
+                        {% for _ in "1234" %}
+                            <div class="ad-sk-row"><div class="ad-sk-line"></div><div class="ad-sk-pill mini"></div></div>
+                        {% endfor %}
+                    </div>
+                </article>
+                <article class="ad-sk-card ad-sk-chart-card">
+                    <div class="ad-sk-line ad-sk-copy short"></div>
+                    <div class="ad-sk-chart"></div>
+                </article>
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-2 ad-sk-spaced">
+                {% for _ in "12" %}
+                    <article class="ad-sk-card ad-sk-list-card">
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                        <div class="ad-sk-list">
+                            {% for _ in "1234" %}
+                                <div class="ad-sk-row">
+                                    <div class="ad-sk-avatar"></div>
+                                    <div class="ad-sk-row-copy">
+                                        <div class="ad-sk-line"></div>
+                                        <div class="ad-sk-line ad-sk-copy short"></div>
+                                    </div>
+                                    <div class="ad-sk-pill mini"></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% elif variant == "feedback" %}
+            <section class="ad-sk-header">
+                <div>
+                    <div class="ad-sk-line ad-sk-title"></div>
+                    <div class="ad-sk-line ad-sk-copy"></div>
+                </div>
+                <div class="ad-sk-actions">
+                    <div class="ad-sk-pill"></div>
+                    <div class="ad-sk-pill short"></div>
+                </div>
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-4">
+                {% for _ in "1234" %}
+                    <article class="ad-sk-card ad-sk-stat">
+                        <div class="ad-sk-icon"></div>
+                        <div class="ad-sk-line ad-sk-value"></div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                    </article>
+                {% endfor %}
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-2 ad-sk-spaced">
+                <article class="ad-sk-card ad-sk-list-card">
+                    <div class="ad-sk-line ad-sk-copy short"></div>
+                    <div class="ad-sk-list compact">
+                        {% for _ in "12345" %}
+                            <div class="ad-sk-row"><div class="ad-sk-pill mini"></div><div class="ad-sk-line"></div></div>
+                        {% endfor %}
+                    </div>
+                </article>
+                <article class="ad-sk-card ad-sk-list-card">
+                    <div class="ad-sk-line ad-sk-copy short"></div>
+                    <div class="ad-sk-list compact">
+                        {% for _ in "1234" %}
+                            <div class="ad-sk-row"><div class="ad-sk-line"></div><div class="ad-sk-pill mini"></div></div>
+                        {% endfor %}
+                    </div>
+                </article>
+            </section>
+
+            <section class="ad-sk-card ad-sk-table-card ad-sk-spaced">
+                <div class="ad-sk-table-head">
+                    <div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                        <div class="ad-sk-line ad-sk-title small"></div>
+                    </div>
+                    <div class="ad-sk-search"></div>
+                </div>
+                <div class="ad-sk-table">
+                    {% for _ in "123456" %}
+                        <div class="ad-sk-table-row">
+                            <div class="ad-sk-avatar"></div>
+                            <div class="ad-sk-line"></div>
+                            <div class="ad-sk-line"></div>
+                            <div class="ad-sk-pill mini"></div>
+                            <div class="ad-sk-pill mini"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% elif variant == "quiz" %}
+            <section class="ad-sk-header">
+                <div>
+                    <div class="ad-sk-line ad-sk-title"></div>
+                    <div class="ad-sk-line ad-sk-copy"></div>
+                </div>
+                <div class="ad-sk-actions">
+                    <div class="ad-sk-pill"></div>
+                </div>
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-4">
+                {% for _ in "1234" %}
+                    <article class="ad-sk-card ad-sk-stat">
+                        <div class="ad-sk-icon"></div>
+                        <div class="ad-sk-line ad-sk-value"></div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                    </article>
+                {% endfor %}
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-2 ad-sk-spaced">
+                <article class="ad-sk-card ad-sk-form-card">
+                    <div class="ad-sk-line ad-sk-title small"></div>
+                    <div class="ad-sk-field"></div>
+                    <div class="ad-sk-field"></div>
+                    <div class="ad-sk-field tall"></div>
+                    <div class="ad-sk-button"></div>
+                </article>
+                <article class="ad-sk-card ad-sk-list-card">
+                    <div class="ad-sk-line ad-sk-title small"></div>
+                    <div class="ad-sk-list">
+                        {% for _ in "12345" %}
+                            <div class="ad-sk-row"><div class="ad-sk-line"></div><div class="ad-sk-pill mini"></div></div>
+                        {% endfor %}
+                    </div>
+                </article>
+            </section>
+        {% else %}
+            <section class="ad-sk-header">
+                <div>
+                    <div class="ad-sk-line ad-sk-title"></div>
+                    <div class="ad-sk-line ad-sk-copy"></div>
+                </div>
+                <div class="ad-sk-actions">
+                    <div class="ad-sk-pill"></div>
+                    <div class="ad-sk-pill short"></div>
+                </div>
+            </section>
+
+            <section class="ad-sk-grid ad-sk-grid-3">
+                {% for _ in "123" %}
+                    <article class="ad-sk-card ad-sk-stat">
+                        <div class="ad-sk-icon"></div>
+                        <div class="ad-sk-line ad-sk-value"></div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                    </article>
+                {% endfor %}
+            </section>
+
+            <section class="ad-sk-card ad-sk-form-card ad-sk-spaced">
+                <div class="ad-sk-line ad-sk-title small"></div>
+                <div class="ad-sk-grid ad-sk-grid-2">
+                    <div class="ad-sk-field"></div>
+                    <div class="ad-sk-field"></div>
+                    <div class="ad-sk-field wide"></div>
+                    <div class="ad-sk-field"></div>
+                </div>
+                <div class="ad-sk-button"></div>
+            </section>
+
+            <section class="ad-sk-card ad-sk-table-card ad-sk-spaced">
+                <div class="ad-sk-table-head">
+                    <div>
+                        <div class="ad-sk-line ad-sk-copy short"></div>
+                        <div class="ad-sk-line ad-sk-title small"></div>
+                    </div>
+                    <div class="ad-sk-search"></div>
+                </div>
+                <div class="ad-sk-table">
+                    {% for _ in "123456" %}
+                        <div class="ad-sk-table-row">
+                            <div class="ad-sk-avatar"></div>
+                            <div class="ad-sk-line"></div>
+                            <div class="ad-sk-line"></div>
+                            <div class="ad-sk-pill mini"></div>
+                            <div class="ad-sk-pill mini"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+</div>

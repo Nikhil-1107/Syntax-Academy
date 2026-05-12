@@ -3,10 +3,33 @@
 <html>
 <head>
     <title>{{ quiz_title|default:quiz.title|default:"Quiz" }}</title>
+    <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
     <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
 </head>
 
 <body>
+<div class="standalone-skeleton-loader" role="status" aria-live="polite" aria-label="Loading quiz">
+    <div class="sk-shell">
+        <section class="sk-card sk-form-card" style="max-width:860px; margin:0 auto;">
+            <div class="sk-receipt-header">
+                <div class="sk-line sk-title short"></div>
+                <div class="sk-pill"></div>
+            </div>
+            <div class="sk-card sk-card-pad" style="margin-top:28px;">
+                <div class="sk-line sk-title"></div>
+                <div class="sk-info-list" style="margin-top:26px;">
+                    {% for _ in "1234" %}
+                        <div class="sk-field"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="sk-meta-row" style="justify-content:flex-end; margin-top:26px;">
+                <div class="sk-button"></div>
+                <div class="sk-button"></div>
+            </div>
+        </section>
+    </div>
+</div>
 
 <div class="quiz-container">
 
@@ -72,6 +95,10 @@
 </div>
 
 <script>
+window.setTimeout(function () {
+    document.documentElement.classList.add('page-skeleton-ready');
+}, 500);
+
 const QUIZ_ID = {{ course.id|default:quiz.course.id|default:0 }};
 const COURSE_ID = {{ course.id|default:quiz.course.id|default:0 }};
 const CSRF_TOKEN = "{{ csrf_token }}";
@@ -129,5 +156,6 @@ const CSRF_TOKEN = "{{ csrf_token }}";
 </script>
 {% endif %}
 
+<script src="{% static 'js/language-switcher.js' %}"></script>
 </body>
 </html>

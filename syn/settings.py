@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app1.context_processors.auth_guard',
+                'app1.context_processors.currency_context',
             ],
         },
     },

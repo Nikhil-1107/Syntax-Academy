@@ -1,6 +1,17 @@
 /* ==================================================
    SYNTAX ACADEMY FAQ PAGE
 ================================================== */
+html,
+body{
+    max-width:100%;
+    overflow-x:hidden;
+}
+
+*,
+*::before,
+*::after{
+    box-sizing:border-box;
+}
 
 .faq-wrapper{
     max-width:900px;

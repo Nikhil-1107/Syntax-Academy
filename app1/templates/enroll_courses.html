@@ -1,7 +1,39 @@
 {% extends "base.html" %}
 {% load static %}
+{% load currency %}
 
 {% block title %}My Enrolls | Syntax Academy{% endblock %}
+
+{% block page_skeleton %}
+<div class="page-skeleton-loader" role="status" aria-live="polite" aria-label="Loading enrolled courses">
+    <div class="sk-shell">
+        <section class="sk-card sk-card-pad" style="display:flex; justify-content:space-between; gap:24px; align-items:flex-end;">
+            <div style="flex:1;">
+                <div class="sk-line sk-title short"></div>
+                <div class="sk-line sk-copy" style="margin-top:16px;"></div>
+            </div>
+            <div class="sk-box" style="width:124px; height:86px; border-radius:18px;"></div>
+        </section>
+
+        <section class="sk-grid sk-grid-3" style="margin-top:42px;">
+            {% for _ in "123" %}
+                <article class="sk-card sk-course-card">
+                    <div class="sk-thumb"></div>
+                    <div class="sk-course-body">
+                        <div class="sk-line"></div>
+                        <div class="sk-meta-row">
+                            <div class="sk-line"></div>
+                            <div class="sk-line"></div>
+                        </div>
+                        <div class="sk-line sk-copy short"></div>
+                        <div class="sk-button" style="width:100%; margin-top:16px;"></div>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+{% endblock page_skeleton %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
@@ -133,7 +165,7 @@ body{
 
                     <div class="enroll-meta">
                         <span>Enrolled on {{ enroll.enrolled_at|date:"d M Y" }}</span>
-                        <span>Rs. {{ enroll.course.price }}</span>
+                        <span>{% currency_amount enroll.course.price %}</span>
                     </div>
 
                     <div class="course-desc">

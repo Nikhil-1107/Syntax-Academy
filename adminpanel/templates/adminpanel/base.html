@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'adminpanel/skeleton.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -19,6 +20,12 @@
         <span class="brand-syntax">Syntax</span>
         <span class="brand-academy">Academy</span>
     </a>
+
+    <div class="language-selector admin-language-selector" data-language-selector role="group" aria-label="Select language">
+        <i class="bi bi-translate language-selector-icon"></i>
+        <button type="button" class="language-option" data-language-option="en">English</button>
+        <button type="button" class="language-option" data-language-option="hi">हिंदी</button>
+    </div>
 
     <ul class="nav-links">
 
@@ -123,6 +130,10 @@
         <h2>{% block page_title %}{% endblock %}</h2>
     </div>
 
+    {% block page_skeleton %}
+        {% include "adminpanel/skeleton.html" with variant="manage" %}
+    {% endblock page_skeleton %}
+
     {% block content %}
     {% endblock %}
 
@@ -130,6 +141,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        window.setTimeout(function () {
+            document.documentElement.classList.add('admin-skeleton-ready');
+
+            document.querySelectorAll('.admin-skeleton-loader').forEach(function (loader) {
+                loader.setAttribute('aria-hidden', 'true');
+            });
+        }, 500);
+
         const numericFields = document.querySelectorAll('input[data-numeric-only], textarea[data-numeric-only]');
         const emailFields = document.querySelectorAll('input[type="email"]');
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -188,6 +207,7 @@
         });
     });
 </script>
+<script src="{% static 'js/language-switcher.js' %}"></script>
 {% if auth_guard_enabled %}
 <script>
     (function () {

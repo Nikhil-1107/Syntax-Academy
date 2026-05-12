@@ -8,6 +8,9 @@
 <title>Secure Payment | Syntax Academy</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% load static %}
+{% load currency %}
+<link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
 
 <style>
 
@@ -217,6 +220,24 @@ border:1px solid rgba(255,255,255,.05);
 </head>
 
 <body>
+<div class="standalone-skeleton-loader" role="status" aria-live="polite" aria-label="Loading payment page">
+    <div class="sk-auth-shell">
+        <div class="sk-card sk-auth-card">
+            <div class="sk-line sk-title"></div>
+            <div class="sk-line sk-copy short" style="margin:0 auto 24px;"></div>
+            <div class="sk-card sk-card-pad" style="margin-bottom:24px;">
+                <div class="sk-line sk-copy short"></div>
+                <div class="sk-line sk-title short" style="margin-top:14px;"></div>
+            </div>
+            <div class="sk-button" style="width:100%;"></div>
+            <div class="sk-meta-row">
+                <div class="sk-pill"></div>
+                <div class="sk-pill"></div>
+                <div class="sk-pill"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="payment-card">
 
@@ -237,7 +258,7 @@ Secure payment powered by Razorpay
 <div>Course Price</div>
 
 <div class="price">
-INR {{ razorpay_amount|floatformat:0|slice:":-2" }}
+{% currency_amount razorpay_amount|floatformat:0|slice:":-2" %}
 </div>
 
 </div>
@@ -263,6 +284,9 @@ Pay & Enroll Now
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+window.setTimeout(function () {
+    document.documentElement.classList.add('page-skeleton-ready');
+}, 500);
 
 var options = {
 
@@ -270,7 +294,9 @@ key: "{{ razorpay_merchant_key }}",
 
 amount: "{{ razorpay_amount }}",
 
-currency: "{{ currency }}",
+currency: "INR",
+display_currency: "{{ currency_code }}",
+display_amount: "{% currency_value razorpay_amount|floatformat:0|slice:':-2' %}",
 
 name: "Syntax Academy",
 
@@ -297,6 +323,7 @@ e.preventDefault();
 
 </script>
 
+<script src="{% static 'js/language-switcher.js' %}"></script>
 </body>
 
 </html>

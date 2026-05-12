@@ -50,7 +50,29 @@
 
                     <div class="student-form-group">
                         <label for="studentMobile">Mobile</label>
-                        <input id="studentMobile" type="text" name="mobile" value="{{ student.mobile|default:'' }}" inputmode="numeric" pattern="[0-9]*" maxlength="10" data-numeric-only required>
+                        <div class="student-mobile-row">
+                            <select
+                                id="studentCountryCode"
+                                name="country_code"
+                                class="student-country-select"
+                                data-country-code-select
+                                data-selected="{{ student.country_code|default:'+91' }}"
+                                required
+                            >
+                                <option value="" disabled>Code</option>
+                            </select>
+                            <input
+                                id="studentMobile"
+                                type="text"
+                                name="mobile"
+                                value="{{ student.mobile|default:'' }}"
+                                inputmode="numeric"
+                                pattern="[0-9]*"
+                                maxlength="15"
+                                data-numeric-only
+                                required
+                            >
+                        </div>
                     </div>
 
                     <div class="student-form-group">
@@ -152,7 +174,7 @@
                         <td>
                             <div class="student-contact-stack">
                                 <div class="student-contact-primary">{{ s.email }}</div>
-                                <div class="student-subtext">{{ s.mobile }}</div>
+                                <div class="student-subtext">{{ s.country_code }} {{ s.mobile }}</div>
                             </div>
                         </td>
 
@@ -240,4 +262,5 @@ function confirmDelete(name) {
 
 applyStudentFilters();
 </script>
+<script src="{% static 'js/country-code-select.js' %}"></script>
 {% endblock %}

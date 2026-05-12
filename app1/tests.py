@@ -17,6 +17,7 @@ class LoginRedirectTests(TestCase):
         self.student = Registration.objects.create(
             name="Test Student",
             email="student@example.com",
+            country_code="+91",
             mobile=1234567890,
             password="secret12!",
             level="beginner",
@@ -49,6 +50,49 @@ class LoginRedirectTests(TestCase):
         self.assertEqual(session.get("login"), self.student.email)
         self.assertEqual(session.get("user_id"), self.student.id)
         self.assertEqual(session.get("user_name"), self.student.name)
+
+    def test_register_redirects_to_login_without_creating_session_login(self):
+        target_url = reverse("courses", args=[self.course.id])
+
+        response = self.client.post(
+            reverse("register"),
+            {
+                "name": "New Student",
+                "email": "newstudent@example.com",
+                "country_code": "+91",
+                "mobile": "9876543210",
+                "password": "secret12!",
+                "level": "beginner",
+                "next": target_url,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response.url).path, reverse("login"))
+        self.assertEqual(parse_qs(urlparse(response.url).query).get("next"), [target_url])
+        self.assertTrue(Registration.objects.filter(email="newstudent@example.com").exists())
+        self.assertNotIn("login", self.client.session)
+        self.assertNotIn("user_id", self.client.session)
+        self.assertNotIn("user_name", self.client.session)
+
+    def test_login_attempt_with_existing_session_still_checks_password(self):
+        session = self.client.session
+        session["login"] = self.student.email
+        session["user_id"] = self.student.id
+        session["user_name"] = self.student.name
+        session.save()
+
+        response = self.client.post(
+            reverse("login"),
+            {
+                "email": self.student.email,
+                "password": "wrong-password",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("login", self.client.session)
+        self.assertContains(response, "Incorrect Password or Email!!!")
 
     def test_login_falls_back_to_home_for_unsafe_next(self):
         response = self.client.post(
@@ -122,6 +166,28 @@ class AdminLoginRedirectTests(TestCase):
         )
 
         self.assertRedirects(response, target_url, fetch_redirect_response=False)
+
+    def test_admin_login_ignores_student_next_url(self):
+        response = self.client.post(
+            reverse("admin_login"),
+            {
+                "username": self.admin_user.username,
+                "password": "secretpass123",
+                "next": reverse("my_enrolls"),
+            },
+        )
+
+        self.assertRedirects(response, reverse("dashboard_home"), fetch_redirect_response=False)
+
+    def test_authenticated_admin_login_ignores_student_next_url(self):
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(
+            reverse("admin_login"),
+            {"next": reverse("my_enrolls")},
+        )
+
+        self.assertRedirects(response, reverse("dashboard_home"), fetch_redirect_response=False)
 
     def test_admin_logout_clears_auth_and_marks_response_no_cache(self):
         self.client.force_login(self.admin_user)

@@ -9,6 +9,7 @@
 }
 
 html, body {
+    max-width: 100%;
     overflow-x: hidden;
 }
 
@@ -121,6 +122,59 @@ body {
 
 .brand-logo:hover .brand-academy::after {
   width: 100%;
+}
+
+.language-selector {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(108, 242, 194, 0.28);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-language-selector {
+  width: 100%;
+  margin: -28px 0 26px;
+  justify-content: center;
+}
+
+.language-selector-icon {
+  margin: 0 6px 0 8px;
+  color: #8ec5ff;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.language-option {
+  height: 28px;
+  min-width: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.language-option:hover {
+  transform: translateY(-1px);
+  background: rgba(106, 168, 255, 0.14);
+  color: #ffffff;
+}
+
+.language-option.is-active {
+  color: #08111f;
+  background: linear-gradient(90deg, #6cf2c2, #6aa8ff);
 }
 
 .nav-links {

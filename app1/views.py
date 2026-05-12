@@ -13,6 +13,7 @@ import re
 import mimetypes
 from io import BytesIO
 import requests
+from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,6 +23,14 @@ from datetime import timedelta
 from django.db.models import Avg, Max, Count
 from app1.serializers import *
 from .models import *
+from app1.utils.currency import (
+    convert_amount,
+    format_currency_amount,
+    format_currency_value,
+    get_currency_for_country_code,
+    get_exchange_rate,
+    normalize_country_code_input,
+)
 
 # Create your views here.
 
@@ -394,16 +403,38 @@ def enroll_course(request, id):
             enrollment.delete()
             return JsonResponse({'status': 'removed'})
 
-        # Create Razorpay order
-        amount = int(course.price) * 100
+        display_currency = get_currency_for_country_code(user.country_code).upper()
+        display_rate = get_exchange_rate(display_currency)
+        display_amount = format_currency_value(course.price, display_currency, display_rate)
+
+        order_currency = _get_razorpay_order_currency(display_currency)
+        order_rate = display_rate if order_currency == display_currency else Decimal("1")
+        amount = _to_razorpay_subunit_amount(course.price, order_currency, order_rate)
 
         receipt = f"course{course.id}-user{user.id}-{timezone.now():%H%M%S}"
-        order = create_razorpay_order(amount=amount, receipt=receipt)
+        try:
+            order = create_razorpay_order(amount=amount, receipt=receipt, currency=order_currency)
+        except Exception:
+            if order_currency != RAZORPAY_BASE_CURRENCY:
+                order_currency = RAZORPAY_BASE_CURRENCY
+                amount = _to_razorpay_subunit_amount(course.price, order_currency, Decimal("1"))
+                order = create_razorpay_order(amount=amount, receipt=receipt, currency=order_currency)
+            else:
+                raise
+
+        display_currency_payload = None
+        display_amount_payload = None
+        if display_currency != order_currency:
+            display_currency_payload = display_currency
+            display_amount_payload = display_amount
 
         return JsonResponse({
             "status": "payment_required",
             "order_id": order["id"],
             "amount": amount,
+            "currency": order_currency,
+            "display_currency": display_currency_payload,
+            "display_amount": display_amount_payload,
             "key": settings.RAZORPAY_KEY_ID,
             "callback_url": request.build_absolute_uri(
                 f"{reverse('payment_success')}?{urlencode({'course_id': course.id})}"
@@ -552,7 +583,11 @@ def register(request):
 
         name = request.POST.get('name')
         email = request.POST.get('email')
-        mobile = request.POST.get('mobile')
+        country_code = normalize_country_code_input(
+            request.POST.get('country_code'),
+            default_code="IN",
+        )
+        mobile = request.POST.get('mobile', '')
         password = request.POST.get('password')
         level = request.POST.get('level')
 
@@ -568,9 +603,12 @@ def register(request):
                 'next': next_url,
             })
 
+        mobile = re.sub(r'\D', '', mobile)
+
         obj = Registration.objects.create(
             name=name,
             email=email,
+            country_code=country_code,
             mobile=mobile,
             password=password,
             level=level
@@ -584,11 +622,12 @@ def register(request):
             fail_silently=True,
         )
 
-        request.session['login'] = obj.email
-        request.session['user_name'] = obj.name
-        request.session['user_id'] = obj.id
+        login_url = reverse('login')
+        if _is_safe_next_url(request, next_url):
+            login_url = f"{login_url}?{urlencode({'next': next_url})}"
 
-        return redirect(_get_post_auth_redirect(request))
+        messages.success(request, "Account created successfully. Please login with your email and password.")
+        return redirect(login_url)
 
     return render(request, 'register.html', {'next': next_url})
 
@@ -597,13 +636,22 @@ def register(request):
 def login(request):
     next_url = request.POST.get('next') or request.GET.get('next') or request.session.get('login_next', '')
 
-    if 'login' in request.session:
-        return redirect(_get_post_auth_redirect(request))
-
     if request.method == 'POST':
+        for session_key in ('login', 'user_name', 'user_id'):
+            request.session.pop(session_key, None)
+
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+
+        if not email or not password:
+            return render(request, 'login.html', {
+                'wrong': 'Please enter both email and password.',
+                'next': next_url,
+            })
+
         try:
-            reg = Registration.objects.get(email=request.POST['email'])
-            if reg.password == request.POST['password']:
+            reg = Registration.objects.get(email__iexact=email)
+            if reg.password == password:
                 request.session['login'] = reg.email
                 request.session['user_name'] = reg.name
                 request.session['user_id'] = reg.id
@@ -796,7 +844,14 @@ def profile(request):
     # -------- UPDATE PROFILE --------
     if request.method == "POST" and request.POST.get("form_type") == "edit_profile":
         user.name = request.POST.get("name")
-        user.mobile = request.POST.get("mobile")
+
+        country_code = normalize_country_code_input(
+            request.POST.get("country_code") or user.country_code,
+            default_code="IN",
+        )
+
+        user.country_code = country_code
+        user.mobile = re.sub(r'\D', '', request.POST.get("mobile", ""))
         user.save()
         messages.success(request, "Profile updated successfully")
         return redirect('profile')
@@ -969,20 +1024,57 @@ from django.http import HttpResponseBadRequest
 from app1.middleware import apply_no_cache_headers
 
 RAZORPAY_ORDERS_URL = "https://api.razorpay.com/v1/orders"
+RAZORPAY_BASE_CURRENCY = "INR"
+RAZORPAY_SUPPORTED_CURRENCIES = {
+    "INR",
+    "USD",
+    "EUR",
+    "GBP",
+    "SGD",
+    "AED",
+    "AUD",
+    "CAD",
+    "CHF",
+    "HKD",
+    "NOK",
+    "NZD",
+    "SEK",
+    "DKK",
+}
+
+
+def _get_razorpay_order_currency(display_currency):
+    currency = (display_currency or RAZORPAY_BASE_CURRENCY).upper()
+    if currency in RAZORPAY_SUPPORTED_CURRENCIES:
+        return currency
+    return RAZORPAY_BASE_CURRENCY
+
+
+def _to_razorpay_subunit_amount(base_amount, currency_code, rate):
+    try:
+        amount_value = Decimal(str(base_amount))
+    except Exception:
+        amount_value = Decimal("0")
+
+    if currency_code == RAZORPAY_BASE_CURRENCY:
+        return int((amount_value * Decimal("100")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+    converted = convert_amount(amount_value, currency_code, rate)
+    return int((converted * Decimal("100")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
 def razorpay_is_configured():
     return bool(getattr(settings, "RAZORPAY_KEY_ID", "")) and bool(getattr(settings, "RAZORPAY_KEY_SECRET", ""))
 
 
-def create_razorpay_order(amount, receipt):
+def create_razorpay_order(amount, receipt, currency=RAZORPAY_BASE_CURRENCY):
     try:
         response = requests.post(
             RAZORPAY_ORDERS_URL,
             auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET),
             json={
                 "amount": amount,
-                "currency": "INR",
+                "currency": currency,
                 "receipt": receipt,
                 "payment_capture": 1,
             },
@@ -1162,6 +1254,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 def build_receipt_pdf(payment):
     buffer = BytesIO()
 
+    currency_code = get_currency_for_country_code(payment.user.country_code)
+    currency_rate = get_exchange_rate(currency_code)
+    formatted_amount = format_currency_amount(payment.amount, currency_code, currency_rate)
+
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
@@ -1250,8 +1346,8 @@ def build_receipt_pdf(payment):
         [
             payment.course.name,
             "1",
-            f"₹ {payment.amount}",
-            f"₹ {payment.amount}"
+            formatted_amount,
+            formatted_amount
         ]
     ]
 
@@ -1279,7 +1375,7 @@ def build_receipt_pdf(payment):
     # ================= TOTAL =================
 
     total_table = Table([
-        ["Total Amount", f" ₹ {payment.amount}"]
+        ["Total Amount", formatted_amount]
     ], colWidths=[350,170])
 
     total_table.setStyle(TableStyle([
@@ -1316,11 +1412,14 @@ def build_receipt_pdf(payment):
 
 def send_payment_invoice_email(payment):
     pdf_bytes = build_receipt_pdf(payment)
+    currency_code = get_currency_for_country_code(payment.user.country_code)
+    currency_rate = get_exchange_rate(currency_code)
+    formatted_amount = format_currency_amount(payment.amount, currency_code, currency_rate)
     subject = f"Your Syntax Academy invoice for {payment.course.name}"
     body = (
         f"Hi {payment.user.name},\n\n"
         f"Thank you for purchasing {payment.course.name} on Syntax Academy.\n"
-        f"Your payment of INR {payment.amount} was received successfully.\n\n"
+        f"Your payment of {formatted_amount} was received successfully.\n\n"
         f"Invoice Number: INV-{payment.id}\n"
         f"Payment ID: {payment.razorpay_payment_id}\n"
         f"Purchase Date: {payment.created_at.strftime('%d %B %Y')}\n\n"

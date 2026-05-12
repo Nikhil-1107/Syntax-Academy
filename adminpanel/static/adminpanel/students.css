@@ -357,6 +357,19 @@
   padding: 0 16px;
 }
 
+.student-mobile-row {
+  display: flex;
+  gap: 12px;
+}
+
+.student-country-select {
+  flex: 0 0 150px;
+}
+
+.student-mobile-row input {
+  flex: 1;
+}
+
 .student-form-group input:focus,
 .student-form-group select:focus,
 .student-search input:focus {
@@ -708,6 +721,16 @@
 
   .student-btn-row {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 540px) {
+  .student-mobile-row {
+    flex-direction: column;
+  }
+
+  .student-country-select {
+    flex: 1 1 100%;
   }
 }
 
